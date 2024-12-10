@@ -23,10 +23,11 @@
             [x] www
             [x] index.html (misy formulaires ho an'ny methode get sy post)
 
-        [] Rehefa fichier fantatra dia affichena ny contenu any
+        [X] Rehefa fichier fantatra dia affichena ny contenu any
             [x] fichier html
             [x] fichier txt
-            [] Sary 
+            [X] Sary
+            [] fichier php
 
         [x] Raisina ny methode an'ilay requete 
             [x] GET
