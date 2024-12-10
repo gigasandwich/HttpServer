@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Server Test</title>
+</head>
+
+<body>
+    <h1>HTTP Server Test</h1>
+
+    <!-- GET Form -->
+    <h2>GET Request sur place</h2>
+    <form method="GET" action="/">
+        <label for="getName">Name:</label>
+        <input type="text" id="getName" name="name">
+
+        <label for="getAge">Age:</label>
+        <input type="text" id="getAge" name="age">
+
+        <label for="getCountry">Country:</label>
+        <select name="country" id="getCountry">
+            <option value="Madagascar">Madagascar</option>
+            <option value="Angleterre">Angleterre</option>
+            <option value="Japon">Japon</option>
+        </select>
+
+        <button type="submit">Submit GET</button>
+    </form>
+
+    <!-- POST Form -->
+    <h2>POST Request sur place</h2>
+    <form method="POST" action="/">
+        <label for="postName">Name:</label>
+        <input type="text" id="postName" name="name">
+
+        <label for="postAge">Age:</label>
+        <input type="text" id="postAge" name="age">
+
+        <label for="postCountry">Country:</label>
+        <select name="country" id="postCountry">
+            <option value="Madagascar">Madagascar</option>
+            <option value="Angleterre">Angleterre</option>
+            <option value="Japon">Japon</option>
+        </select>
+
+
+        <button type="submit">Submit POST</button>          
+    </form>
+
+    <!-- GET Form mankany @ folder1 -->
+    <h2>Get request /folder1/page1.html</h2>
+    <form method="GET" action="/folder1/page1.html">
+        <label for="">Name:</label>
+        <input type="text" id="" name="name">
+
+        <label for="">Age:</label>
+        <input type="text" id="" name="age">
+
+        <button type="submit">Submit POST</button>          
+    </form>
+
+    <!-- POST Form mankany @ folder1 -->
+    <h2>Post request /folder1/page1.html</h2>
+    <form method="POST" action="/folder1/page1.html">
+        <label for="">Name:</label>
+        <input type="text" id="" name="name">
+
+        <label for="">Age:</label>
+        <input type="text" id="" name="age">
+
+        <button type="submit">Submit POST</button>          
+    </form>
+
+    <!-- Sary mbola tsy mipoitra -->
+    <!-- <img src="folder1/image1.png" alt=""> -->
+</body>
+
+</html>
