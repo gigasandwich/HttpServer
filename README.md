@@ -23,7 +23,7 @@
             [x] www
             [x] index.html (misy formulaires ho an'ny methode get sy post)
 
-        [X] Rehefa fichier fantatra dia affichena ny contenu any
+        [] Rehefa fichier fantatra dia affichena ny contenu any
             [x] fichier html
             [x] fichier txt
             [X] Sary
@@ -41,3 +41,19 @@
                 [x] Raha dossier ilay ressourse angatahana dia listeny ny fichiers ao @ iny dossier iny
                 [x] Raha fichier dia vakina ilay contenu no atao body ilay izy
                 [x] Affichena any @ ilay page ilay form datas
+
+# Tohiny
+    [X] php
+        [X] Miinstalle interpretteur
+```bash
+    sudo apt install php php-cli
+```
+
+        [X] Mampiasa interpreteur
+            [X] Antsoina ilay commande (mampiasa class ProcessBuilder) 
+            [X] Raisina ny output (raisina ny inputStream an'ny process)
+            [X] atao body ilay output
+
+    [X] Fichier de configuration
+        [X] Path
+        [X] Port

@@ -23,9 +23,7 @@ public class Response {
         headers = new HashMap<>();
         httpVersion = "HTTP/1.1";
 
-        // Chemin absolu mankeo @ dossier an'ny compilation.sh
-        String currentDirectory = java.nio.file.Paths.get("").toAbsolutePath().toString();
-        webRoot = currentDirectory + "/www";
+        webRoot = Server.getWebRoot();
 
         // Mameno ny valeurs ana attributs hafa
         handleRequest(request);
@@ -100,13 +98,14 @@ public class Response {
 
 
     private byte[] executePhpFile(File phpFile) throws IOException {
+        // ProccessBuilder (commande, fanampiny)
         ProcessBuilder processBuilder = new ProcessBuilder("php", phpFile.getAbsolutePath());
-        processBuilder.redirectErrorStream(true); // Merge standard error into standard output
+        processBuilder.redirectErrorStream(true); // Standard error + standard output miaraka affiche
 
-        // Start the process
-        Process process = processBuilder.start();
+        // Manindry entre ao @ terminal
+        Process process = processBuilder.start();   
 
-        // Capture the output
+        // Alaina ny output
         try (
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         ) {

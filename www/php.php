@@ -11,10 +11,10 @@
     <title>Fichier php</title>
 </head>
 <body>
-    <p><?php var_dump($array) ?></p>
+    <p><?php var_dump($array) echo jwadawd ?></p>
 
     <h2>Get request /folder1/treatment.php</h2>
-    <form method="GET" action="/folder1/treatment.php">
+    <form method="GET" action="/php.php">
         <label for="">Name:</label>
         <input type="text" id="" name="name">
 
@@ -26,7 +26,7 @@
 
     <!-- POST Form mankany @ folder1 -->
     <h2>Post request /folder1/treatment.php</h2>
-    <form method="POST" action="/folder1/treatment.php">
+    <form method="POST" action="/php.php">
         <label for="">Name:</label>
         <input type="text" id="" name="name">
 

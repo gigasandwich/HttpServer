@@ -1,36 +1,91 @@
 package http;
+import config.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-
 public class Server {
     int port;
+    static String webRoot;
+    boolean isServerRunning = false;
+    ServerSocket serverSocket;
+    List<Socket> clientSockets; 
 
-    public Server(int port) {
-        this.port = port;
+    public Server() {
+        try {
+            ServerConfig config = new ServerConfig("config/httpserver.conf");
+            this.port = config.getServerPort();
+            Server.webRoot = config.getPath();
+            this.clientSockets = new ArrayList<>();
+
+        } catch (Exception e) {
+            System.out.println("Configuration error: " + e.getMessage());
+        }
     }
 
-    public static void main(String[] args) {
+    // Alefa via swing
+    // public static void main(String[] args) {
+    //     Server server = new Server();
+    //     server.startServer();
+    // }
+
+    public void startServer() {
         try {
-            Server server = new Server(8080);
-            server.run();
+            if (!isServerRunning) {
+                isServerRunning = true;
+                run(); 
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    void run() throws Exception {
+    public void stopServer() {
+        if (isServerRunning) {
+            try {
+                isServerRunning = false;
+
+                // Pihana daholo ny clientSocket rehetra
+                for (Socket clientSocket : clientSockets) {
+                    try {
+                        if (clientSocket != null && !clientSocket.isClosed()) {
+                            clientSocket.close(); 
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Error closing client socket: " + e.getMessage());
+                    }
+                }
+
+                 try {
+                    if (serverSocket != null && !serverSocket.isClosed()) {
+                        serverSocket.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println("Server has been stopped.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("Error closing sockets: " + e.getMessage());
+            }
+        }
+    }
+
+
+
+    public void run() throws Exception {
         try (ServerSocket serverSocket = new ServerSocket(port)) { 
 
-            while (true) { 
+            while (isServerRunning) { 
                 // 1 Thread per Client 
                 Socket clientSocket = serverSocket.accept();  
+                clientSockets.add(clientSocket);
+
                 Thread thread = new Thread() {
                     @Override
                     public void run() {
@@ -54,7 +109,7 @@ public class Server {
             Request request = new Request(in);
             Response response = new Response(request);
             System.out.println("Request:\n" + request);
-            System.out.println("Response:\n" + response);
+            System.out.println("Response:\n" + response.stringValue());
 
             // Alefa mitokana ny headers (String)
             out.write(response.getHeadersToString().getBytes("UTF-8"));
@@ -73,4 +128,23 @@ public class Server {
             }
         }
     }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    // Getters
+    public static void setWebRoot(String webRoot) {
+        Server.webRoot = webRoot;
+    }    
+
+    public int getPort() {
+        return port;
+    }
+
+    // Getters
+    public static String getWebRoot() {
+        return webRoot;
+    }
+  
 }
