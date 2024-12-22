@@ -1,4 +1,5 @@
 package http;
+import config.ServerConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class Response {
         headers = new HashMap<>();
         httpVersion = "HTTP/1.1";
 
-        webRoot = Server.getWebRoot();
+        webRoot = ServerConfig.getHtdocs();
 
         // Mameno ny valeurs ana attributs hafa
         handleRequest(request);
@@ -61,7 +62,7 @@ public class Response {
                 String directoryListing = listDirectoryContent(url, file);
                 setBody(directoryListing);
 
-            } else if (file.getName().endsWith(".php")) { // Raha fichier php
+            } else if (file.getName().endsWith(".php") && ServerConfig.canReadPhp()) { // Raha fichier php, no sady eken'ny serveur hoe afaka mamaky php
                 try {
                     this.setStatus(200);
                     this.addHeader("Content-Type", "text/html");
@@ -102,7 +103,7 @@ public class Response {
         ProcessBuilder processBuilder = new ProcessBuilder("php", phpFile.getAbsolutePath());
         processBuilder.redirectErrorStream(true); // Standard error + standard output miaraka affiche
 
-        // Manindry entre ao @ terminal
+        // Ohatran'ny Manindry "enter button" ao @ terminal
         Process process = processBuilder.start();   
 
         // Alaina ny output
@@ -131,8 +132,10 @@ public class Response {
 
         if (url.contains("?")) {
             String[] parts = url.split("\\?", 2);
-            // parts[0]: index.html
-            // parts[1]: name=Fako&age=17&Country=Madagascar
+            /*
+             * parts[0]: index.html
+             * parts[1]: name=Fako&age=17&Country=Madagascar
+             */
             url = parts[0]; 
             queryParams = parseQueryParams(parts[1]); // Eto indray ny url no tsy rarahiana fa ny query ihany satria ireo sisa no affichena
         }

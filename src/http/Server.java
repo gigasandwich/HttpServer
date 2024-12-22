@@ -9,17 +9,15 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    int port;
-    static String webRoot;
+    ServerConfig serverConfig;
+
     boolean isServerRunning = false;
     ServerSocket serverSocket;
     List<Socket> clientSockets; 
 
     public Server() {
         try {
-            ServerConfig config = new ServerConfig("config/httpserver.conf");
-            this.port = config.getServerPort();
-            Server.webRoot = config.getPath();
+            ServerConfig serverConfig = new ServerConfig(); // Mandefa ny fonction main an'i ServerConfig.class no tanjona (initialisation d'attributs)
             this.clientSockets = new ArrayList<>();
 
         } catch (Exception e) {
@@ -27,11 +25,14 @@ public class Server {
         }
     }
 
-    // Alefa via swing
-    // public static void main(String[] args) {
-    //     Server server = new Server();
-    //     server.startServer();
-    // }
+    // Alefa via swing dia tsy mila main intsony
+
+    /*
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.startServer();
+    }
+    */
 
     public void startServer() {
         try {
@@ -60,7 +61,7 @@ public class Server {
                     }
                 }
 
-                 try {
+                try {
                     if (serverSocket != null && !serverSocket.isClosed()) {
                         serverSocket.close();
                     }
@@ -77,9 +78,8 @@ public class Server {
     }
 
 
-
     public void run() throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(port)) { 
+        try (ServerSocket serverSocket = new ServerSocket(ServerConfig.getPort())) { 
 
             while (isServerRunning) { 
                 // 1 Thread per Client 
@@ -96,9 +96,10 @@ public class Server {
             }
 
         } catch (Exception e) {
-            throw e;
+            throw e; // startServer no aleo micatch an'ilay exception
         }
     }
+    
 
     void handleClient(Socket clientSocket) {
         try (
@@ -127,24 +128,6 @@ public class Server {
                 System.err.println("Error by closing clientSocket: " + e.getMessage());
             }
         }
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    // Getters
-    public static void setWebRoot(String webRoot) {
-        Server.webRoot = webRoot;
-    }    
-
-    public int getPort() {
-        return port;
-    }
-
-    // Getters
-    public static String getWebRoot() {
-        return webRoot;
     }
   
 }
