@@ -37,7 +37,7 @@ public class Request {
         // Raha misy body (post, put, patch) dia parsena char[] ilay izy amzay voaray tsara ny contenu any
         if (headers.containsKey("Content-Length")) {
             int contentLength = Integer.parseInt(headers.get("Content-Length"));
-            char[] bodyChars = new char[contentLength]; // Izay tokony vakiana ihany no vakiana (selon ny Content-Length)
+            char[] bodyChars = new char[contentLength]; // Izay tokony vakiana ihany no vakiana (Limitena grace a Content-Length)
             in.read(bodyChars); 
             this.body = new String(bodyChars);
         }

@@ -41,7 +41,7 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }       
 
     public void stopServer() {
         if (isServerRunning) {
@@ -57,12 +57,12 @@ public class Server {
                     } catch (IOException e) {
                         System.err.println("Error closing client socket: " + e.getMessage());
                     }
-                }
+                }   
 
                 try {
                     if (serverSocket != null && !serverSocket.isClosed()) {
                         serverSocket.close();
-                    }
+                    }   
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -113,7 +113,8 @@ public class Server {
 
             // Alefa mitokana ny headers (String)
             out.write(response.getHeadersToString().getBytes("UTF-8"));
-            // Alefa mitokana ny body (byte[])
+
+            // Mihidina a la ligne 2 fois vita header izay vao alefa ny body
             out.write(response.getBody());
             out.flush();
 

@@ -1,13 +1,16 @@
 package navigator;
-import config.ServerConfig;
 
+import config.ServerConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FileHandler {
+
     // Relatif par rapport @ htdocs daholo ny zavatra lalaovina ato
     private String htdocs;
 
@@ -15,21 +18,17 @@ public class FileHandler {
         this.htdocs = htdocs;
     }
 
-    public byte[] readFileContent(File file) throws IOException {
-        return Files.readAllBytes(file.toPath());
-    }
-
     // Ilay eo @ url an'ny navigateur misy an'itony % zavatra tony (ohatra hoe @ href, rehefa fichier/dossier misy espace) dia mila averina @ laoniny aloha
     public String decodeUrl(String url) {
         String decodedUrl = url;
-        
-        decodedUrl = decodedUrl.replaceAll("%20", " "); 
-        decodedUrl = decodedUrl.replaceAll("%2F", "/");  
-        decodedUrl = decodedUrl.replaceAll("%3A", ":");  
-        decodedUrl = decodedUrl.replaceAll("%3F", "?");  
-        decodedUrl = decodedUrl.replaceAll("%3D", "=");  
-        decodedUrl = decodedUrl.replaceAll("%26", "&");  
-        
+
+        decodedUrl = decodedUrl.replaceAll("%20", " ");
+        decodedUrl = decodedUrl.replaceAll("%2F", "/");
+        decodedUrl = decodedUrl.replaceAll("%3A", ":");
+        decodedUrl = decodedUrl.replaceAll("%3F", "?");
+        decodedUrl = decodedUrl.replaceAll("%3D", "=");
+        decodedUrl = decodedUrl.replaceAll("%26", "&");
+
         return decodedUrl;
     }
 
@@ -39,13 +38,13 @@ public class FileHandler {
         if (ServerConfig.canReadPhp()) {
             File phpFile = new File(directory, "index.php");
             if (phpFile.exists()) {
-                return phpFile;  
+                return phpFile;
             }
         }
 
         File htmlFile = new File(directory, "index.html");
         if (htmlFile.exists()) {
-            return htmlFile;  
+            return htmlFile;
         }
 
         return null;
@@ -53,54 +52,114 @@ public class FileHandler {
 
     // Miliste ny fichiers anatin'io 
     public String listDirectoryContent(String url, File file) {
+        url = decodeUrl(url); // raha misy espace dia tsy %20 no mipoitra fa " "
         StringBuilder directoryListing = new StringBuilder();
         directoryListing.append("<html><body>");
         directoryListing.append("<h1>Index of ").append(url).append("</h1>");
-        directoryListing.append("<ul>");
+        directoryListing.append("<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">");
+        directoryListing.append("<thead><tr>");
+        directoryListing.append("<th>Name</th>");
+        directoryListing.append("<th>Size</th>");
+        directoryListing.append("<th>Last Modified</th>");
+        directoryListing.append("<th>Type</th>");
+        directoryListing.append("</tr></thead>");
+        directoryListing.append("<tbody>");
+
+        // Mamerina any @ dossier parent
+        if (file.getParentFile() != null) {
+            String parentUrl = url.endsWith("/") ? "../" : url + "/../";
+            directoryListing.append("<tr>");
+            directoryListing.append("<td><a href=\"").append(parentUrl).append("\">")
+                                    .append("Back to Parent Directory</a></td>");
+            directoryListing.append("<td>-</td>");
+            directoryListing.append("<td>-</td>");
+            directoryListing.append("<td>Directory</td>");
+            directoryListing.append("</tr>");
+        }
 
         File[] files = file.listFiles();
         if (files != null) {
             for (File f : files) {
                 String fileName = f.getName();
-                String filePath = ""; // Apetraka amle href ny filePath
-                if( url.endsWith("/") ) 
-                    filePath = url + fileName;
-                else 
-                    filePath = url + "/" + fileName;
-                
-                directoryListing.append("<li><a href=\"").append(filePath).append("\">")
-                        .append(fileName)
-                        .append("</a></li>");
+                String filePath = url.endsWith("/") ? url + fileName : url + "/" + fileName;
+
+                // Get file details
+                long fileSize = f.length();
+                String formattedSize = f.isDirectory() ? "-" : formatFileSize(fileSize);
+                String lastModified = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .format(new Date(f.lastModified()));
+                String fileType = f.isDirectory() ? "Directory" : "File";
+
+                // Append table row
+                directoryListing.append("<tr>");
+                directoryListing.append("<td><a href=\"").append(filePath).append("\">")
+                        .append(fileName).append("</a></td>");
+                directoryListing.append("<td>").append(formattedSize).append("</td>");
+                directoryListing.append("<td>").append(lastModified).append("</td>");
+                directoryListing.append("<td>").append(fileType).append("</td>");
+                directoryListing.append("</tr>");
             }
         }
 
-        directoryListing.append("</ul>");
+        directoryListing.append("</tbody></table>");
         directoryListing.append("</body></html>");
         return directoryListing.toString();
+    }
+
+    /**
+     * Byte io size io de base, dia aseho sous forme: Bytes, KB, MB, GB ...
+     */
+    private String formatFileSize(long size) {
+        if (size < 1024) {
+            return size + " B";
+        }
+        double sizeInKB = size / 1024.0;
+        if (sizeInKB < 1024) {
+            return String.format("%.2f KB", sizeInKB);
+        }
+        double sizeInMB = sizeInKB / 1024.0;
+        if (sizeInMB < 1024) {
+            return String.format("%.2f MB", sizeInMB);
+        }
+        double sizeInGB = sizeInMB / 1024.0;
+        if (sizeInGB < 1024) {
+            return String.format("%.2f GB", sizeInGB);
+        }
+        double sizeInTB = sizeInGB / 1024.0;
+        return String.format("%.2f TB", sizeInTB);
     }
 
     /* 
         Fichiers afaka asehon'ny navigateur, sinon asain'ny navigateur telechargena @ alalan'ny 
         Content-Disposition: attachment; filename="example.pdf"
-    */
+     */
     public boolean canDisplayFile(File file) {
         // Ireo ihany no afaka apoitra, ankotran zay telechargena
         String fileName = file.getName().toLowerCase();
-        String[] displayableExtensions = {"html", "txt", "jpg", "png", "gif", "css", "js"};
-        
+        String[] displayableExtensions = {"html", "txt", "jpg", "png", "gif", "css", "js", "mp3", "mp4", "mkv"};
+
         for (String extension : displayableExtensions) {
-            if (fileName.endsWith("." + extension)) 
+            if (fileName.endsWith("." + extension)) {
                 return true;
+            }
         }
-        
+
         return false;
     }
 
+    public byte[] readFileContent(File file) {
+        try {
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new byte[0];
+        }
+    }
 
     public String getContentType(File file) {
         // Raha dossier
         if (file.isDirectory()) {
-            return "text/html"; 
+            return "text/html";
         }
 
         // Raha fichier
@@ -111,7 +170,7 @@ public class FileHandler {
         }
 
         // Raha tsy fantatra
-        return "application/octet-stream"; 
+        return "application/octet-stream";
     }
 
     /* 
@@ -119,7 +178,6 @@ public class FileHandler {
      * Section: utilities
      * =====================
      */
-
     static Map<String, String> getContentTypes() {
         Map<String, String> extension_contentType = new HashMap<>();
         extension_contentType.put("txt", "text/plain");

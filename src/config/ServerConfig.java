@@ -33,7 +33,7 @@ public class ServerConfig {
     /**
         * Ny zavatra soratana ao:
         * port = 1234
-        * path = /home/yvan/Documents/HttpServer/www
+        * path = /home/yvan/Documents/HttpServer/htdocs
         * read_php = yes
     */
 

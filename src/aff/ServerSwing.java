@@ -10,14 +10,17 @@ import javax.swing.*;
 
 public class ServerSwing extends JFrame {
     private Server server;
+    
     private JButton startButton;
     private JButton stopButton;
     private JButton saveButton;
+
     private JLabel statusLabel;
     private JTextField portField;
     private JTextField pathField;
     private JRadioButton readPhpField;
 
+    private JButton browseButton; 
 
 
     public static void main(String[] args) {
@@ -26,7 +29,6 @@ public class ServerSwing extends JFrame {
     }
 
     public ServerSwing() {
-     
         server = new Server();
 
         setTitle("HTTP Server");
@@ -56,6 +58,17 @@ public class ServerSwing extends JFrame {
         configPanel.add(pathLabel); configPanel.add(pathField);
         configPanel.add(readPhpLabel); configPanel.add(readPhpField);
 
+        // Create a panel to hold the browse button separately from the grid layout
+        JPanel browsePanel = new JPanel();
+        browseButton = new JButton("Change HTDOCS PATH...");
+        browseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openFileExplorer();
+            }
+        });
+        browsePanel.add(browseButton); // Add the browse button to its own panel
+
         // Buttons
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
         startButton = new JButton("Start Server");
@@ -68,7 +81,7 @@ public class ServerSwing extends JFrame {
         buttonPanel.add(stopButton);
         buttonPanel.add(saveButton);
 
-        stopButton.setEnabled(false); // Atao maty par defaut
+        stopButton.setEnabled(false); // By default, the Stop button is disabled
 
         // Button Actions
         startButton.addActionListener(new ActionListener() {
@@ -95,6 +108,7 @@ public class ServerSwing extends JFrame {
         // Add components to the frame
         add(statusLabel, BorderLayout.NORTH);
         add(configPanel, BorderLayout.CENTER);
+        add(browsePanel, BorderLayout.EAST); // Position browse button panel to the right side
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
@@ -103,13 +117,13 @@ public class ServerSwing extends JFrame {
             int port = Integer.parseInt(portField.getText().trim());
             String path = pathField.getText().trim();
 
-            // Update 
+            // Update ServerConfig
             ServerConfig.setPort(port);
             ServerConfig.setHtdocs(path);
 
-            new Thread(){ // Anaovana thread amin'izay mandeha foana ny fonctionalite hafa
+            new Thread() {
                 @Override
-                public void run(){
+                public void run() {
                     try {
                         server.startServer();
                     } catch (Exception ex) {
@@ -140,14 +154,9 @@ public class ServerSwing extends JFrame {
             String port = portField.getText().trim();
             String path = pathField.getText().trim();
             boolean readPhp = readPhpField.isSelected();
-            
-            // "yes" na "no" no soratana @ fichier de config
-            String readPhpProperty = "";
-            if (readPhp)
-                readPhpProperty = "yes";
-            else 
-                readPhpProperty = "no";
 
+            // "yes" or "no" for the read_php property
+            String readPhpProperty = readPhp ? "yes" : "no";
 
             ServerConfig.setProperty("port", port);
             ServerConfig.setProperty("htdocs", path);
@@ -164,4 +173,18 @@ public class ServerSwing extends JFrame {
         statusLabel.setText("Server Status: " + status);
     }
 
+    // Method to open the file explorer
+    private void openFileExplorer() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select HTML Folder");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Only allow directories
+
+        // Show the file chooser and get the user's selection
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Set the selected directory path to the path field
+            String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
+            pathField.setText(selectedPath);
+        }
+    }
 }
