@@ -67,4 +67,31 @@
 
 - [x] Mila feno tsara ny headers
 
-- [ ] Création d'un installateur
+- [x] Creation d'un installateur anaty dossier debian
+  - [x] Foronina ny fichiers takian'ny deb, ny ankotran zay tsy kitihana
+    - [x] control
+    - [x] postinst
+    - [x] prerm
+    - [x] rules <!-- Amzay afaka mamadika executable an le fichier perm -->
+    - [x] changelog
+  - [x] Manamboatra an'ilay fichier.deb
+    - [x] Miinstalle an'ireo package fanaovana debisation
+    ```bash
+    sudo apt install dpkg-dev
+    sudo apt install dpkg-dev
+    ```
+    - [x] Avadika deb ilay programme
+    ```bash
+    dpkg-buildpackage -us -uc -b 
+    ```
+
+ 
+# Desinstallation
+   ```bash
+   sudo dpkg -r httpserver
+   ```
+# Bonus
+  [x] Fichier fanaovana log
+
+> **Tsy vita:**
+  [] Mampandefa chemin relatif (chemin absolu ihany no mandeha)gi

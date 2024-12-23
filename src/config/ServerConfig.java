@@ -8,7 +8,7 @@ import java.util.Properties;
 public class ServerConfig {
     // static no lalaovina amin'izay tsy mila mamorona objet de type ServerConfig isaky ny classe mampiasa an'azy
     private static final Properties properties = new Properties();
-    private static final String CONFIG_FILE_PATH = "config/httpserver.conf";
+    private static final String CONFIG_FILE_PATH = "/etc/httpserver/httpserver.conf";
     private static final String PORT_KEY = "port";
     private static final String HTDOCS_KEY = "htdocs";
     private static final String READ_PHP_KEY = "read_php";

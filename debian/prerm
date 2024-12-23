@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+echo "Removing HTTP Server..."
+
+# Fafana le script mampandefa azy
+if [ -f /usr/bin/httpserver ]; then
+    rm /usr/bin/httpserver
+    echo "Removed /usr/bin/httpserver"
+else
+    echo "/usr/bin/httpserver not found, removing aborted."
+fi
+
+# Fafana ny dossier de configuration sy ny ao anatiny 
+if [ -d /etc/httpserver ]; then
+    rm -rf /etc/httpserver
+    echo "Removed /etc/httpserver"
+else
+    echo "/etc/httpserver not found, skipping removal."
+fi
+
+# Fafana ny htdocs raha tsisy nininona ao anatiny
+if [ -d "$HTDOCS" ] && [ -z "$(ls -A "$HTDOCS")" ]; then
+    rmdir "$HTDOCS"
+    echo "Removed empty document root directory: $HTDOCS"
+else
+    echo "Document root directory not empty, removing aborted."
+fi
+
+echo "HTTP Server removal complete."

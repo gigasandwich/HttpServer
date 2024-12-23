@@ -17,9 +17,9 @@ public class Server {
     public Server() {
         try {
             this.clientSockets = new ArrayList<>();
-
+            AppLogger.logInfo("Server initialized successfully."); 
         } catch (Exception e) {
-            System.out.println("Configuration error: " + e.getMessage());
+            AppLogger.logError("Configuration error: " + e.getMessage(), e);
         }
     }
 
@@ -36,10 +36,11 @@ public class Server {
         try {
             if (!isServerRunning) {
                 isServerRunning = true;
+                AppLogger.logInfo("Server is starting...");
                 run(); 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLogger.logError("Error while starting the server.", e);
         }
     }       
 
@@ -55,7 +56,7 @@ public class Server {
                             clientSocket.close(); 
                         }
                     } catch (IOException e) {
-                        System.err.println("Error closing client socket: " + e.getMessage());
+                        AppLogger.logWarning("Error closing client socket: " + e.getMessage());
                     }
                 }   
 
@@ -64,13 +65,12 @@ public class Server {
                         serverSocket.close();
                     }   
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    AppLogger.logError("Error closing server socket.", e);
                 }
 
-                System.out.println("Server has been stopped.");
+                AppLogger.logInfo("Server has been stopped.");
             } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Error closing sockets: " + e.getMessage());
+                AppLogger.logError("Error during server shutdown.", e);
             }
         }
     }
@@ -84,6 +84,8 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();  
                 clientSockets.add(clientSocket);
 
+                AppLogger.logInfo("New client connected: " + clientSocket.getLocalAddress().getHostAddress());
+
                 Thread thread = new Thread() {
                     @Override
                     public void run() {
@@ -94,8 +96,7 @@ public class Server {
             }
 
         } catch (Exception e) {
-            // startServer no aleo micatch an'ilay exception
-            throw e; 
+            throw e; // startServer no aleo micatch an'ilay exception
         }
     }
     
@@ -108,8 +109,10 @@ public class Server {
             
             Request request = new Request(in);
             Response response = new Response(request);
-            System.out.println("Request:\n" + request);
-            System.out.println("Response:\n" + response.stringValue());
+
+            AppLogger.logInfo("Request received from client: " + clientSocket.getLocalAddress().getHostAddress());
+            AppLogger.logInfo("Request Details:\n" + request);
+            AppLogger.logInfo("Response Details:\n" + response.stringValue());
 
             // Alefa mitokana ny headers (String)
             out.write(response.getHeadersToString().getBytes("UTF-8"));
@@ -121,12 +124,13 @@ public class Server {
 
         } catch (Exception e) {
             // Raha throwena dia lasa mila catchena na throwena ao @ methode start() fa aleo tonga dia catchena eto ilay Exception
-            e.printStackTrace(); 
+            AppLogger.logError("Error handling client: " + clientSocket.getLocalAddress().getHostAddress(), e);
         } finally {
             try {
                 clientSocket.close();
+                AppLogger.logInfo("Connection closed with client: " + clientSocket.getLocalAddress().getHostAddress());
             } catch (IOException e) {
-                System.err.println("Error by closing clientSocket: " + e.getMessage());
+                AppLogger.logWarning("Error closing client socket: " + e.getMessage());
             }
         }
     }

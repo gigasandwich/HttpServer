@@ -4,6 +4,8 @@ import config.ServerConfig;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,14 +34,27 @@ public class FileHandler {
         return decodedUrl;
     }
 
+    public String normalizePath(String requestUrl) {
+        // Raha depart root dia fafana ny /
+        if (requestUrl.startsWith("/")) {
+            requestUrl = requestUrl.substring(1); 
+        }
+
+        String decodedUrl = this.decodeUrl(requestUrl);  // %20 -> " "
+
+        // Atao absolu par rappoort @ htdocs no sady asorina ny chemin miverimberina
+        // Eg: fako/../fako/fichier = > fako/fichier 
+        Path resolvedPath = Paths.get(ServerConfig.getHtdocs(), decodedUrl).normalize(); 
+        return resolvedPath.toString();
+    }
+
     // Mitady Fichier index.extension
     public File findIndexFile(File directory) {
         // Raha read_php = yes dia index.php tadiavina voalohany
         if (ServerConfig.canReadPhp()) {
             File phpFile = new File(directory, "index.php");
-            if (phpFile.exists()) {
+            if (phpFile.exists()) 
                 return phpFile;
-            }
         }
 
         File htmlFile = new File(directory, "index.html");
@@ -51,8 +66,11 @@ public class FileHandler {
     }
 
     // Miliste ny fichiers anatin'io 
-    public String listDirectoryContent(String url, File file) {
-        url = decodeUrl(url); // raha misy espace dia tsy %20 no mipoitra fa " "
+    public String listDirectoryContent(File directory) {
+         // raha misy espace dia tsy %20 no mipoitra fa " "
+        String url = getUrlFromFile(directory);
+        url = decodeUrl(url);
+
         StringBuilder directoryListing = new StringBuilder();
         directoryListing.append("<html><body>");
         directoryListing.append("<h1>Index of ").append(url).append("</h1>");
@@ -66,7 +84,7 @@ public class FileHandler {
         directoryListing.append("<tbody>");
 
         // Mamerina any @ dossier parent
-        if (file.getParentFile() != null) {
+        if (directory.getParentFile() != null) {
             String parentUrl = url.endsWith("/") ? "../" : url + "/../";
             directoryListing.append("<tr>");
             directoryListing.append("<td><a href=\"").append(parentUrl).append("\">")
@@ -77,23 +95,21 @@ public class FileHandler {
             directoryListing.append("</tr>");
         }
 
-        File[] files = file.listFiles();
+        File[] files = directory.listFiles();
         if (files != null) {
             for (File f : files) {
                 String fileName = f.getName();
                 String filePath = url.endsWith("/") ? url + fileName : url + "/" + fileName;
 
-                // Get file details
+                // Details an'ny fichier
                 long fileSize = f.length();
                 String formattedSize = f.isDirectory() ? "-" : formatFileSize(fileSize);
-                String lastModified = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        .format(new Date(f.lastModified()));
+                String lastModified = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(f.lastModified()));
                 String fileType = f.isDirectory() ? "Directory" : "File";
 
-                // Append table row
+                // Manampy ligne
                 directoryListing.append("<tr>");
-                directoryListing.append("<td><a href=\"").append(filePath).append("\">")
-                        .append(fileName).append("</a></td>");
+                directoryListing.append("<td><a href=\"").append(filePath).append("\">").append(fileName).append("</a></td>");
                 directoryListing.append("<td>").append(formattedSize).append("</td>");
                 directoryListing.append("<td>").append(lastModified).append("</td>");
                 directoryListing.append("<td>").append(fileType).append("</td>");
@@ -106,10 +122,29 @@ public class FileHandler {
         return directoryListing.toString();
     }
 
+    private String getUrlFromFile(File file) {
+        String htdocsPath = ServerConfig.getHtdocs(); 
+
+
+        String absolutePath = file.getAbsolutePath(); // Chemin absolu an le fichier
+        String relativePath = absolutePath.replace(htdocsPath, ""); // / Soloina banga na "/" ilay soratra eo @ chemin absolu 
+
+        // Raha tsisy nininona ilay chemin relatif dia ao @ htdocs izany ilay fichier
+        if (relativePath.isEmpty()) {
+            relativePath = "/";
+        }
+
+        // Make sure the relative path starts with a "/"
+        return relativePath.startsWith("/") ? relativePath : "/" + relativePath;
+    }
+
+
+
+
     /**
      * Byte io size io de base, dia aseho sous forme: Bytes, KB, MB, GB ...
      */
-    private String formatFileSize(long size) {
+    private String formatFileSize(long size) {  
         if (size < 1024) {
             return size + " B";
         }

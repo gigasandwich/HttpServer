@@ -10,16 +10,18 @@
 <body>
     <h1>HTTP Server Test</h1>
 
-    <a href="/static files">Lien mankany amina dossier feno fichiers statiques (tsisy index.html index.php)</a>
+    <a href="/htdocs/static files">Lien mankany amina dossier feno fichiers statiques (tsisy index.html index.php)</a>  
+    <a href="static files">Lien mankany amina dossier feno fichiers statiques (tsisy index.html index.php)</a>  
+
     <hr>
-    <a href="/index files">Lien mankany amina dossier misy index.html sy index.php</a>
+    <a href="index files">Lien mankany amina dossier misy index.html sy index.php</a>
     <hr>
-    <a href="/php.php">Fichier php</a>
+    <a href="php.php">Fichier php</a>
 
     <hr>
     <!-- GET Form -->
     <h2>GET Request sur place</h2>
-    <form method="GET" action="/">
+    <form method="GET" action="/index.html">
         <label for="getName">Name:</label>
         <input type="text" id="getName" name="name">
 
@@ -38,7 +40,7 @@
 
     <!-- POST Form -->
     <h2>POST Request sur place</h2>
-    <form method="POST" action="/">
+    <form method="POST" action="index.html">
         <label for="postName">Name:</label>
         <input type="text" id="postName" name="name">
 
@@ -60,7 +62,7 @@
     
     <!-- GET Form mankany @ dossier feno fichiers statique -->
     <h2>Get request /static files/page1.html</h2>
-    <form method="GET" action="/static files/page1.html">
+    <form method="GET" action="static files/page1.html">
         <label for="">Name:</label>
         <input type="text" id="" name="name">
 
@@ -72,7 +74,7 @@
 
     <!-- POST Form mankany @ static files -->
     <h2>Post request /static files/page1.html</h2>
-    <form method="POST" action="/static files/page1.html">
+    <form method="POST" action="static files/page1.html">
         <label for="">Name:</label>
         <input type="text" id="" name="name">
 

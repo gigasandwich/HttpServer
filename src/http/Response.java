@@ -94,14 +94,13 @@ public class Response {
         
         
         // Amoronana objet de type File ilay chemin notapena teo @ url
-        String path = fileHandler.decodeUrl(url); // Avadika " " ny %20 ohatra
-        File file = new File(htdocs, path);
+        String normalizedPath = fileHandler.normalizePath(url); // Atao par rapport @ htdocs fona (avadika chemin absolu)
+        File file = new File(normalizedPath);
 
-        System.out.println(file.getAbsolutePath());
         if (file.exists()) { 
             // Raha dossier
             if (file.isDirectory()) 
-                handleDirectoryRequest(file, url);
+                handleDirectoryRequest(file);
 
             // Raha fichier php, no sady eken'ny serveur hoe afaka mamaky php
             else if (file.getName().endsWith(".php") && ServerConfig.canReadPhp()) 
@@ -134,7 +133,8 @@ public class Response {
         }
     } 
     
-    private void handleDirectoryRequest(File directory, String url) {
+    
+    private void handleDirectoryRequest(File directory) {
         File indexFile = fileHandler.findIndexFile(directory);
         if (indexFile != null) {
             // Ilay fichier index no servena fa tsy listena intsony ny fichiers anaty dossier
@@ -148,11 +148,10 @@ public class Response {
             this.addHeader("Content-Type", "text/html");    
 
             // Listena daholo ny elements ao
-            String directoryListing = fileHandler.listDirectoryContent(url, directory);
+            String directoryListing = fileHandler.listDirectoryContent(directory);
             setBody(directoryListing);
         }
     }
-
     
     private void handlePhpFileRequest(File phpFile) {
         try {
@@ -344,14 +343,14 @@ public class Response {
     }
 
     // Ilay map an'ny headers avadika String version hitan'ny client HTTP
-    // eg: Content-Length: 31043
     public String getHeadersToString() {
         StringBuilder headerBuilder = new StringBuilder();
         headerBuilder.append(httpVersion).append(" ").append(statusCode).append(" ").append(message).append("\r\n");
         for (Map.Entry<String, String> header : headers.entrySet()) {
+            // eg: Content-Length: 31043
             headerBuilder.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
         }
-        headerBuilder.append("\r\n"); // End of headers
+        headerBuilder.append("\r\n"); // 2 sauts a la ligne
         return headerBuilder.toString();
     }
 
@@ -388,7 +387,7 @@ public class Response {
         // Asina espace entre header sy body
         response.append("\r\n");
 
-        response.append(body);
+        response.append(new String(body));
 
         return response.toString();
     }

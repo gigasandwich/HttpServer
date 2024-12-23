@@ -1,0 +1,68 @@
+#!/bin/bash
+set -e
+
+echo "Installing HTTP Server"
+
+# Create necessary directories
+mkdir -p /opt/httpserver/bin
+mkdir -p /etc/httpserver
+
+# Alefa any @ /opt/httpserver/bin ny packages + fichier.class rehetra
+PACKAGE_DIR="/home/yvan/Documents/HttpServer" # dossier misy an'le projet
+cp -r "$PACKAGE_DIR/bin/" /opt/httpserver/
+
+# Ito script ito no startena raha te handefa an le programme
+cat << 'EOF' > /usr/bin/httpserver
+#!/bin/bash
+cd /opt/httpserver/bin
+java -cp . aff.ServerSwing
+EOF
+
+chmod +x /usr/bin/httpserver
+
+# Verification hoe installe ve java
+if ! command -v java &> /dev/null
+then
+  echo "Java could not be found. Please install Java to run the server."
+  exit 1
+fi
+
+# Prompt ho an'ny port
+read -p "Enter the port number (default: 1234): " PORT
+PORT=${PORT:-1234}
+
+# Prompt ho an'ny emplacement an'ny htdocs
+read -p "Enter the document root directory (default: ~/Documents): " HTDOCS
+USER_HOME=$(eval echo ~$SUDO_USER)
+HTDOCS=${HTDOCS:-$USER_HOME/Documents}  
+
+# Prompt ho an'ny famakiana fichier php
+read -p "Allow PHP reading? (yes/no, default: no): " READ_PHP
+READ_PHP=${READ_PHP:-no}
+
+# Variable ho an'ny emplacement an'ny fichier de configuration
+CONFIG_DIR="/etc/httpserver"
+
+# Creation fichier de configuration
+CONFIG_FILE="$CONFIG_DIR/httpserver.conf"
+mkdir -p "$CONFIG_DIR"
+cat > "$CONFIG_FILE" <<EOL
+# HTTP Server Configuration
+# $(date)
+htdocs=$HTDOCS
+port=$PORT
+read_php=$READ_PHP
+EOL
+
+# Creation fichier fanaovana log
+touch $CONFIG_DIR/server.log
+chown $SUDO_USER:$SUDO_USER $CONFIG_DIR/server.log
+chmod 666 $CONFIG_DIR/server.log
+
+# Confirmation hoe miexiste ny htdocs, foroniny raha tsisy
+mkdir -p "$HTDOCS"
+
+# Amzay afaka read sy writen'ILAY USER MANAO INSTALLATION ilay fichier de configuration
+chown $SUDO_USER:$SUDO_USER "$CONFIG_FILE" 
+chmod 700 "$CONFIG_FILE"
+echo "Configuration completed! The configuration file is located at $CONFIG_FILE"

@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+# Specify the debhelper compatibility level
+# debhelper version 12, as defined in debian/control
+# Adjust this version based on your needs
+# Make sure debhelper is installed and specified correctly in debian/control
+%:
+	dh $@
+
+override_dh_install:
+	# Make sure the prerm script is executable
+	chmod +x debian/prerm
+	# Continue the standard install process
+	dh_install

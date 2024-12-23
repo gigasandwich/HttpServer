@@ -1,0 +1,13 @@
+Source: httpserver
+Section: utils
+Priority: optional
+Maintainer: Yvan <yvannandy@gmail.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.5.1
+
+Package: httpserver
+Architecture: all
+# Depends: default-jre
+Description: A simple HTTP server
+ A lightweight HTTP server written in Java. It supports user-defined 
+ configurations for port and htdocs path, and optionally reads PHP files.

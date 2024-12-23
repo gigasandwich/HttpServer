@@ -23,6 +23,7 @@ public class ServerSwing extends JFrame {
     private JRadioButton readPhpField;
 
     private JButton browseButton;
+    private JButton viewLogButton;
 
     public static void main(String[] args) {
         ServerSwing serverSwing = new ServerSwing();
@@ -51,7 +52,7 @@ public class ServerSwing extends JFrame {
         statusLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         // Port, Htdocs sy read_php
-        JPanel configPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel configPanel = new JPanel(new GridLayout(3, 2, 10, 10));  
         configPanel.setBorder(BorderFactory.createTitledBorder("Server Configuration"));
 
         JLabel portLabel = new JLabel("Port:");
@@ -62,6 +63,7 @@ public class ServerSwing extends JFrame {
 
         JLabel readPhpLabel = new JLabel("Read php:");
         readPhpField = new JRadioButton();
+        readPhpField.setSelected(ServerConfig.canReadPhp()); // Selectione rehefa canReadPhp == true
 
         configPanel.add(portLabel);
         configPanel.add(portField);
@@ -71,7 +73,7 @@ public class ServerSwing extends JFrame {
         configPanel.add(readPhpField);
 
         // Cote droite, ivelan le panel misy grid 
-        JPanel browsePanel = new JPanel();
+        JPanel browsePanel = new JPanel(new GridLayout(2, 1, 10, 10)); // 2 lignes 1 colonne
         browseButton = new JButton("Change HTDOCS path");
         browseButton.addActionListener(new ActionListener() {
             @Override
@@ -80,6 +82,16 @@ public class ServerSwing extends JFrame {
             }
         });
         browsePanel.add(browseButton);
+        
+        // Fijerevana log
+        viewLogButton = new JButton("View Logs");
+        viewLogButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewLogFile();
+            }
+        });
+        browsePanel.add(viewLogButton);
 
         // ButtonPanel
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 10, 10));
@@ -181,8 +193,8 @@ public class ServerSwing extends JFrame {
             JOptionPane.showMessageDialog(this, "Invalid port number. Please enter a valid integer between 1 and 65535.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(this, "Invalid file path: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Failed to save configuration: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to save configuration: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -202,6 +214,26 @@ public class ServerSwing extends JFrame {
             // Ovaina ilay chemin eo @ JTextField
             String selectedPath = fileChooser.getSelectedFile().getAbsolutePath();
             pathField.setText(selectedPath);
+        }
+    }
+
+    private void viewLogFile() {
+        try {
+            File logFile = new File("/etc/httpserver/server.log");
+
+            if (!logFile.exists()) {
+                JOptionPane.showMessageDialog(this, "Log file not found!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Sokafana @ apk par defaut ilay fichier log
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(logFile);
+            } else {
+                JOptionPane.showMessageDialog(this, "Desktop not supported. Cannot open log file.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to open log file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

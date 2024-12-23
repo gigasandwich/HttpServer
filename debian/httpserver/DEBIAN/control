@@ -1,0 +1,10 @@
+Package: httpserver
+Version: 1.0
+Architecture: all
+Maintainer: Yvan <yvannandy@gmail.com>
+Installed-Size: 10
+Section: utils
+Priority: optional
+Description: A simple HTTP server
+ A lightweight HTTP server written in Java. It supports user-defined
+ configurations for port and htdocs path, and optionally reads PHP files.
