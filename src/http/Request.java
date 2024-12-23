@@ -56,7 +56,11 @@ public class Request {
         return formData;
     }
 
-    /* -------------------------- DISPLAY -------------------------- */
+    /* 
+     * =====================
+     * Section: Display
+     * =====================
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -67,7 +71,11 @@ public class Request {
         return sb.toString();
     }
 
-    /* -------------------------- GETTERS -------------------------- */
+    /* 
+     * =====================
+     * Section: Getters
+     * =====================
+     */
     public String getMethod() {
         return method;
     }

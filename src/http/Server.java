@@ -9,15 +9,13 @@ import java.net.Socket;
 import java.util.*;
 
 public class Server {
-    ServerConfig serverConfig;
-
+    
     boolean isServerRunning = false;
     ServerSocket serverSocket;
     List<Socket> clientSockets; 
 
     public Server() {
         try {
-            ServerConfig serverConfig = new ServerConfig(); // Mandefa ny fonction main an'i ServerConfig.class no tanjona (initialisation d'attributs)
             this.clientSockets = new ArrayList<>();
 
         } catch (Exception e) {
@@ -96,7 +94,8 @@ public class Server {
             }
 
         } catch (Exception e) {
-            throw e; // startServer no aleo micatch an'ilay exception
+            // startServer no aleo micatch an'ilay exception
+            throw e; 
         }
     }
     
@@ -120,7 +119,8 @@ public class Server {
 
 
         } catch (Exception e) {
-            e.printStackTrace(); // Raha throwena dia lasa mila catchena na throwena ao @ methode start()
+            // Raha throwena dia lasa mila catchena na throwena ao @ methode start() fa aleo tonga dia catchena eto ilay Exception
+            e.printStackTrace(); 
         } finally {
             try {
                 clientSocket.close();

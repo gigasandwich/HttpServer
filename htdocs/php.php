@@ -11,6 +11,8 @@
     <title>Fichier php</title>
 </head>
 <body>
+    <!-- Fanahy iniana asiana erreur amin'izay hita hoe mandeha ilay interpreteur php  -->
+    <!-- Raha nipoitra teo ny contenu an le page ka tsy nisy erreur nipoitra dia tsy niasa izany ilay interpreteur php -->
     <p><?php var_dump($array) echo jwadawd ?></p>
 
     <h2>Get request /folder1/treatment.php</h2>

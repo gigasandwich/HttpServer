@@ -23,11 +23,11 @@
             [x] www
             [x] index.html (misy formulaires ho an'ny methode get sy post)
 
-        [] Rehefa fichier fantatra dia affichena ny contenu any
+        [x] Rehefa fichier fantatra dia affichena ny contenu any
             [x] fichier html
             [x] fichier txt
             [X] Sary
-            [] fichier php
+            [x] fichier php
 
         [x] Raisina ny methode an'ilay requete 
             [x] GET
@@ -45,9 +45,9 @@
 # Tohiny
     [X] php
         [X] Miinstalle interpretteur
-```bash
-    sudo apt install php php-cli
-```
+        ```bash
+            sudo apt install php php-cli
+        ```
 
         [X] Mampiasa interpreteur
             [X] Antsoina ilay commande (mampiasa class ProcessBuilder) 
@@ -55,5 +55,18 @@
             [X] atao body ilay output
 
     [X] Fichier de configuration
-        [X] Path
+        [X] htdocs
         [X] Port
+        [x] Read php
+
+    [x] Interface fanaovana interation @ fichier de conf
+        [x] Swing
+
+    [x] Fichier index no itsofohana voalohany
+        [x] rehefa read_php = yes/true dia index.php no itsofohana voalohany
+
+    [] Mila feno tsara ny headers
+
+    [] Creation d'un installateur
+
+    

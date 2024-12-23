@@ -7,22 +7,27 @@ import java.util.Properties;
 
 public class ServerConfig {
     // static no lalaovina amin'izay tsy mila mamorona objet de type ServerConfig isaky ny classe mampiasa an'azy
-    static Properties properties;
-    static String configFilePath;
+    private static final Properties properties = new Properties();
+    private static final String CONFIG_FILE_PATH = "config/httpserver.conf";
+    private static final String PORT_KEY = "port";
+    private static final String HTDOCS_KEY = "htdocs";
+    private static final String READ_PHP_KEY = "read_php";
 
-    // Atao anaty bloc static amin'izay afaka initialisena sy loadena ilay properties 
+    // Atao anaty bloc static amin'izay afaka initialisena sy loadena ilay properties vao manomboka (anaty RAM)
     static {
-        properties = new Properties();
-        configFilePath = "config/httpserver.conf";
-
-        try(FileInputStream input = new FileInputStream(configFilePath)) {
+        try(FileInputStream input = new FileInputStream(CONFIG_FILE_PATH)) {
             properties.load(input);
         } catch (Exception e) {
+            System.err.println("Failed to load configuration file: " + CONFIG_FILE_PATH);
             e.printStackTrace();
         }
     }
  
-    /* -------------------------- SETTERS -------------------------- */
+    /* 
+     * =====================
+     * Section: Setters
+     * =====================
+     */
 
     // Ilay zavatra tokony atao ao 
     /**
@@ -43,7 +48,7 @@ public class ServerConfig {
             * #Updated Server Configuration
             * #Sun Dec 22 13:58:09 EAT 2024
          */
-        try (FileOutputStream output = new FileOutputStream(configFilePath)) {
+        try (FileOutputStream output = new FileOutputStream(CONFIG_FILE_PATH)) {
             properties.store(output, "Updated Server Configuration");
         } catch (IOException e) {
             throw e; // alefa any @ Swing
@@ -51,18 +56,22 @@ public class ServerConfig {
     }
 
     public static void setPort(int port) throws IOException {
-        setProperty("port", String.valueOf(port));
+        setProperty(PORT_KEY, String.valueOf(port));
     }
 
     public static void setHtdocs(String path) throws IOException {
-        setProperty("htdocs", path);
+        setProperty(HTDOCS_KEY, path);
     }
 
     public static void setCanReadPhp(boolean value) throws IOException {
-        setProperty("read_php", String.valueOf(value));
+        setProperty(READ_PHP_KEY, String.valueOf(value));
     }
 
-    /* -------------------------- GETTERS -------------------------- */
+    /* 
+     * =====================
+     * Section: Getters
+     * =====================
+     */
 
     // Manao ohatran'ny map 
     // eg: property.get("path") = "/etc/.../config.conf" 
@@ -84,7 +93,9 @@ public class ServerConfig {
     }
 
     public static boolean canReadPhp() {
-        return getProperty("read_php").equals("yes"); // .equals fa tsy == satria pointeur ny String
+        // return getProperty("read_php").equals("yes"); // .equals fa tsy == satria pointeur ny String
+        String value = getProperty(READ_PHP_KEY);
+        return value != null && (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase("true"));
     }
 
 }
