@@ -26,7 +26,7 @@
         [x] Rehefa fichier fantatra dia affichena ny contenu any
             [x] fichier html
             [x] fichier txt
-            [X] Sary
+            [x] Sary
             [x] fichier php
 
         [x] Raisina ny methode an'ilay requete 
@@ -43,20 +43,20 @@
                 [x] Affichena any @ ilay page ilay form datas
 
 # Tohiny
-    [X] php
-        [X] Miinstalle interpretteur
+    [x] php
+        [x] Miinstalle interpretteur
         ```bash
             sudo apt install php php-cli
         ```
 
-        [X] Mampiasa interpreteur
-            [X] Antsoina ilay commande (mampiasa class ProcessBuilder) 
-            [X] Raisina ny output (raisina ny inputStream an'ny process)
-            [X] atao body ilay output
+        [x] Mampiasa interpreteur
+            [x] Antsoina ilay commande (mampiasa class ProcessBuilder) 
+            [x] Raisina ny output (raisina ny inputStream an'ny process)
+            [x] atao body ilay output
 
-    [X] Fichier de configuration
-        [X] htdocs
-        [X] Port
+    [x] Fichier de configuration
+        [x] htdocs
+        [x] Port
         [x] Read php
 
     [x] Interface fanaovana interation @ fichier de conf
@@ -65,7 +65,7 @@
     [x] Fichier index no itsofohana voalohany
         [x] rehefa read_php = yes/true dia index.php no itsofohana voalohany
 
-    [] Mila feno tsara ny headers
+    [x] Mila feno tsara ny headers
 
     [] Creation d'un installateur
 
